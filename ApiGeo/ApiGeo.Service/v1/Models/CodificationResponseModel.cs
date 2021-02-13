@@ -1,6 +1,9 @@
 ﻿using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Text;
 
-namespace Geocodificador.Service.v1.Models
+namespace GeoApi.Service.v1.Models
 {
     public class CodificationResponseModel
     {

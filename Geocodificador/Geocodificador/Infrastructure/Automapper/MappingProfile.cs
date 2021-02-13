@@ -8,7 +8,7 @@ namespace Geocodificador.Infrastructure.Automapper
     {
         public MappingProfile()
         {
-            CreateMap<CodificationModel, Codification>().ForMember(x => x.X, opt => opt.MapFrom(src => 1));
+            CreateMap<CodificationModel, Codification>().ForMember(x => x.Entity_Id, opt => opt.MapFrom(src => 1));
         }
     }
 }

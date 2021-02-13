@@ -19,6 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ApiGeo.Messaging.Receive\GeoApi.Messaging.Receive.csproj" />
     <ProjectReference Include="..\ApiGeo.Service\GeoApi.Service.csproj" />
     <ProjectReference Include="..\Domain\GeoApi.Domain.csproj" />
     <ProjectReference Include="..\GeoApi.Messaging.Send\GeoApi.Messaging.Send.csproj" />

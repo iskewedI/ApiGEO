@@ -11,7 +11,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GeoApi.Domain", "Domain\Geo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GeoApi.Service", "ApiGeo.Service\GeoApi.Service.csproj", "{7FCD7749-E75C-4F2D-9BA0-20CF0B6C80FD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeoApi.Messaging.Send", "GeoApi.Messaging.Send\GeoApi.Messaging.Send.csproj", "{0F6C0B21-9B6C-4FE9-BA23-DF916EABEDBE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GeoApi.Messaging.Send", "GeoApi.Messaging.Send\GeoApi.Messaging.Send.csproj", "{0F6C0B21-9B6C-4FE9-BA23-DF916EABEDBE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeoApi.Messaging.Receive", "ApiGeo.Messaging.Receive\GeoApi.Messaging.Receive.csproj", "{6BFD5025-B87D-409A-BD5F-1A39BF7F8E40}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{0F6C0B21-9B6C-4FE9-BA23-DF916EABEDBE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0F6C0B21-9B6C-4FE9-BA23-DF916EABEDBE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0F6C0B21-9B6C-4FE9-BA23-DF916EABEDBE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6BFD5025-B87D-409A-BD5F-1A39BF7F8E40}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6BFD5025-B87D-409A-BD5F-1A39BF7F8E40}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6BFD5025-B87D-409A-BD5F-1A39BF7F8E40}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6BFD5025-B87D-409A-BD5F-1A39BF7F8E40}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

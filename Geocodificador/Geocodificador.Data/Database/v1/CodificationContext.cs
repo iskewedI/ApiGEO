@@ -13,7 +13,7 @@ namespace Geocodificador.Data.Database.v1
             {
                 new Codification
                 {
-                    X = "s",
+                    Display_Name = "s",
                 }
             };
 

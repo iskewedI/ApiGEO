@@ -12,7 +12,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Geocodificador.Data\Geocodificador.Data.csproj" />
     <ProjectReference Include="..\Geocodificador.Domain\Geocodificador.Domain.csproj" />
+    <ProjectReference Include="..\Geocodificador.Messaging.Send\Geocodificador.Messaging.Send.csproj" />
   </ItemGroup>
 
 </Project>

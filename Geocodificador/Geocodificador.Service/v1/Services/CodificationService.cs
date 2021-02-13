@@ -6,6 +6,8 @@ using System.Linq;
 using System.Net.Http;
 using Newtonsoft.Json;
 using System.Threading.Tasks;
+using Geocodificador.Service.v1.Command;
+using Geocodificador.Domain.Entities;
 
 namespace Geocodificador.Service.v1.Services
 {
@@ -18,11 +20,11 @@ namespace Geocodificador.Service.v1.Services
             _mediator = mediator;
         }
         
-        public async Task<CodificationResponseModel> CodificateLocalization(LocalizationRequestModel localizationRequestModel)
+        public async Task<Codification> CodificateLocalization(LocalizationRequestModel localizationRequestModel)
         {
             HttpClient client = new HttpClient() { BaseAddress = new Uri("https://nominatim.openstreetmap.org") };
 
-            string url = $"/search?street={localizationRequestModel.Calle}&street={localizationRequestModel.Calle}&city={localizationRequestModel.Ciudad}&state={localizationRequestModel.Provincia}&country={localizationRequestModel.Pais}&postalcode={localizationRequestModel.Codigo_Postal}&format=json";
+            string url = $"/search?street={localizationRequestModel.Calle}&street={localizationRequestModel.Calle} {localizationRequestModel.Numero}&city={localizationRequestModel.Ciudad}&state={localizationRequestModel.Provincia}&country={localizationRequestModel.Pais}&postalcode={localizationRequestModel.Codigo_Postal}&format=json";
 
             client.DefaultRequestHeaders.TryAddWithoutValidation("Accept", "text/html,application/json");
             client.DefaultRequestHeaders.TryAddWithoutValidation("User-Agent", "C# App");
@@ -31,9 +33,16 @@ namespace Geocodificador.Service.v1.Services
 
             var content = await response.Content.ReadAsStringAsync();
 
-            CodificationResponseModel responseModel = JsonConvert.DeserializeObject<List<CodificationResponseModel>>(content).FirstOrDefault();
+            Codification codification = JsonConvert.DeserializeObject<List<Codification>>(content).FirstOrDefault();
 
-            return responseModel;
+            CodificationResponseCommand codificationResponseCommand = new CodificationResponseCommand
+            {
+                Codification = codification
+            };
+
+            await _mediator.Send(codificationResponseCommand);
+
+            return null;
         }
     }
 }

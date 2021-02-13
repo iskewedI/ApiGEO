@@ -23,6 +23,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using GeoApi.Data.Database.v1;
 using System.Collections.Generic;
+using GeoApi.Messaging.Receive.Receiver.v1;
+using GeoApi.Service.v1.Services;
 
 namespace GeoApi
 {
@@ -40,8 +42,14 @@ namespace GeoApi
             services.AddHealthChecks();
             services.AddOptions();
 
-            var serviceClientSettingsConfig = Configuration.GetSection("RabbitMq");
-            services.Configure<RabbitMqConfiguration>(serviceClientSettingsConfig);
+            //RECEIVER CONFIG
+            var serviceClientSettingsConfigReceiver = Configuration.GetSection("RabbitMqReceiver");
+            var serviceClientSettingsReceiver = serviceClientSettingsConfigReceiver.Get<Messaging.Receive.Options.v1.RabbitMqConfiguration>();
+            services.Configure<Messaging.Receive.Options.v1.RabbitMqConfiguration>(serviceClientSettingsConfigReceiver);
+
+            //SENDER CONFIG
+            var serviceClientSettingsConfigSender = Configuration.GetSection("RabbitMqSender");
+            services.Configure<Messaging.Send.Options.v1.RabbitMqConfiguration>(serviceClientSettingsConfigSender);
 
             // CHANGE TO DB
             services.AddDbContext<LocalizationRequestContext>(options => options.UseInMemoryDatabase(Guid.NewGuid().ToString()));
@@ -96,11 +104,19 @@ namespace GeoApi
             //services.AddTransient<IValidator<UpdateLocalizationRequestModel>, UpdateLocalizationRequestModelValidator>();
 
             services.AddSingleton<ICodificationRequestSender, CodificationRequestSender>();
+            services.AddSingleton<CodificationResponseReceiver>();
 
             services.AddTransient<IRequestHandler<GetLocalizationRequestsQuery, List<Localization>>, GetLocalizationRequestsQueryHandler>();
             services.AddTransient<IRequestHandler<CreateLocalizationRequestCommand, Localization>, CreateLocalizationRequestCommandHandler>();
             services.AddTransient<IRequestHandler<CodificationRequestCommand, Localization>, CodificationRequestCommandHandler>();
             services.AddTransient<IRequestHandler<GetLocalizationRequestByIdQuery, Localization>, GetLocalizationRequestByIdQueryHandler>();
+       
+            services.AddTransient<ICodificationResponseService, CodificationResponseService>();
+
+            if (serviceClientSettingsReceiver.Enabled)
+            {
+                services.AddHostedService<CodificationResponseReceiver>();
+            }
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

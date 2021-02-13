@@ -1,9 +1,7 @@
 ﻿using Geocodificador.Data.Database.v1;
 using Geocodificador.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -19,6 +17,5 @@ namespace Geocodificador.Data.Repository.v1
         {
             return await CodificationContext.Codification.ToListAsync(cancellationToken);
         }
-
     }
 }

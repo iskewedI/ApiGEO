@@ -2,33 +2,33 @@
 using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
 using Microsoft.Extensions.Hosting;
-using Geocodificador.Messaging.Receive.Options.v1;
+using GeoApi.Messaging.Receive.Options.v1;
 using System.Threading.Tasks;
 using RabbitMQ.Client.Events;
 using System.Threading;
-using Geocodificador.Service.v1.Services;
-using Geocodificador.Service.v1.Models;
 using Newtonsoft.Json;
+using GeoApi.Service.v1.Services;
+using GeoApi.Service.v1.Models;
 
-namespace Geocodificador.Messaging.Receive.Receiver.v1
+namespace GeoApi.Messaging.Receive.Receiver.v1
 {
-    public class CodificationRequestReceiver : BackgroundService
+    public class CodificationResponseReceiver : BackgroundService
     {
         private IModel _channel;
         private IConnection _connection;
-        private readonly ICodificationService _codificationService;
+        private readonly ICodificationResponseService _codificationResponseService;
         private readonly string _hostname;
         private readonly string _queueName;
         private readonly string _username;
         private readonly string _password;
 
-        public CodificationRequestReceiver(ICodificationService codificationService, IOptions<RabbitMqConfiguration> rabbitMqOptions)
+        public CodificationResponseReceiver(ICodificationResponseService codificationResponseService, IOptions<RabbitMqConfiguration> rabbitMqOptions)
         {
             _hostname = rabbitMqOptions.Value.Hostname;
             _queueName = rabbitMqOptions.Value.QueueName;
             _username = rabbitMqOptions.Value.UserName;
             _password = rabbitMqOptions.Value.Password;
-            _codificationService = codificationService;
+            _codificationResponseService = codificationResponseService;
 
             InitializeRabbitMqListener();
         }
@@ -57,10 +57,10 @@ namespace Geocodificador.Messaging.Receive.Receiver.v1
             consumer.Received += (ch, ea) =>
             {
                 var content = Encoding.UTF8.GetString(ea.Body.ToArray());
-                var localizationRequestModel = JsonConvert.DeserializeObject<LocalizationRequestModel>(content);
+                var codificationResponseModel = JsonConvert.DeserializeObject<CodificationResponseModel>(content);
 
 #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-                HandleMessageAsync(localizationRequestModel);
+                HandleMessageAsync(codificationResponseModel);
 #pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
 
                 _channel.BasicAck(ea.DeliveryTag, false);
@@ -75,9 +75,9 @@ namespace Geocodificador.Messaging.Receive.Receiver.v1
             return Task.CompletedTask;
         }
 
-        private async Task HandleMessageAsync(LocalizationRequestModel localizationRequestModel)
+        private async Task HandleMessageAsync(CodificationResponseModel localizationRequestModel)
         {
-            await _codificationService.CodificateLocalization(localizationRequestModel);
+            //await _codificationService.CodificateLocalization(localizationRequestModel);
         }
 
         private void OnConsumerCancelled(object sender, ConsumerEventArgs e)

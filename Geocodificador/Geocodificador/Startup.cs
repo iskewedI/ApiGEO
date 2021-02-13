@@ -1,30 +1,26 @@
 using Geocodificador.Service.v1.Services;
-using GeoCodificador.Messaging.Receive.Options.v1;
+using Geocodificador.Messaging.Receive.Options.v1;
+using Geocodificador.Messaging.Send.Options.v1;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
-using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
-using GeoCodificador.Messaging.Receive.Receiver.v1;
+using Geocodificador.Messaging.Receive.Receiver.v1;
 using Geocodificador.Service.v1.Command;
 using Geocodificador.Domain.Entities;
 using System.IO;
 using FluentValidation.AspNetCore;
-using Geocodificador.Data.Database;
 using Geocodificador.Data.Database.v1;
+using Geocodificador.Messaging.Send.Sender.v1;
+using Geocodificador.Data.Repository.v1;
 
 namespace Geocodificador
 {
@@ -42,9 +38,14 @@ namespace Geocodificador
             services.AddHealthChecks();
             services.AddOptions();
 
-            var serviceClientSettingsConfig = Configuration.GetSection("RabbitMq");
-            var serviceClientSettings = serviceClientSettingsConfig.Get<RabbitMqConfiguration>();
-            services.Configure<RabbitMqConfiguration>(serviceClientSettingsConfig);
+            //RECEIVER CONFIG
+            var serviceClientSettingsConfigReceiver = Configuration.GetSection("RabbitMqReceiver");
+            var serviceClientSettingsReceiver = serviceClientSettingsConfigReceiver.Get<Messaging.Receive.Options.v1.RabbitMqConfiguration>();
+            services.Configure<Messaging.Receive.Options.v1.RabbitMqConfiguration>(serviceClientSettingsConfigReceiver);
+
+            //SENDER CONFIG
+            var serviceClientSettingsConfigSender = Configuration.GetSection("RabbitMqSender");
+            services.Configure<Messaging.Send.Options.v1.RabbitMqConfiguration>(serviceClientSettingsConfigSender);
 
 
             services.AddDbContext<CodificationContext>(options => options.UseInMemoryDatabase(Guid.NewGuid().ToString()));
@@ -92,13 +93,18 @@ namespace Geocodificador
 
             services.AddMediatR(Assembly.GetExecutingAssembly(), typeof(ICodificationService).Assembly);
 
+            services.AddTransient(typeof(IRepository<>), typeof(Repository<>));
+            services.AddTransient<ICodificationRepository, CodificationRepository>();
+
             services.AddSingleton<CodificationRequestReceiver>();
+            services.AddSingleton<ICodificationResponseSender, CodificationResponseSender>();
 
             services.AddTransient<IRequestHandler<CodificateCommand, Codification>, CodificateCommandHandler>();
+            services.AddTransient<IRequestHandler<CodificationResponseCommand, Codification>, CodificationResponseCommandHandler>();
 
             services.AddTransient<ICodificationService, CodificationService>();
 
-            if (serviceClientSettings.Enabled)
+            if (serviceClientSettingsReceiver.Enabled)
             {
                 services.AddHostedService<CodificationRequestReceiver>();
             }
