@@ -95,11 +95,11 @@ namespace GeoApi
             services.AddTransient<IValidator<CreateLocalizationRequestModel>, CreateLocalizationRequestModelValidator>();
             //services.AddTransient<IValidator<UpdateLocalizationRequestModel>, UpdateLocalizationRequestModelValidator>();
 
-            services.AddSingleton<ILocalizationRequestUpdateSender, LocalizationRequestUpdateSender>();
+            services.AddSingleton<ICodificationRequestSender, CodificationRequestSender>();
 
             services.AddTransient<IRequestHandler<GetLocalizationRequestsQuery, List<Localization>>, GetLocalizationRequestsQueryHandler>();
             services.AddTransient<IRequestHandler<CreateLocalizationRequestCommand, Localization>, CreateLocalizationRequestCommandHandler>();
-            //services.AddTransient<IRequestHandler<UpdateLocalizationRequestCommand, LocalizationRequest>, UpdateLocalizationRequestCommandHandler>();
+            services.AddTransient<IRequestHandler<CodificationRequestCommand, Localization>, CodificationRequestCommandHandler>();
             services.AddTransient<IRequestHandler<GetLocalizationRequestByIdQuery, Localization>, GetLocalizationRequestByIdQueryHandler>();
         }
 

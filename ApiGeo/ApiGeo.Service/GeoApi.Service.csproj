@@ -11,6 +11,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Data\GeoApi.Data.csproj" />
     <ProjectReference Include="..\Domain\GeoApi.Domain.csproj" />
+    <ProjectReference Include="..\GeoApi.Messaging.Send\GeoApi.Messaging.Send.csproj" />
   </ItemGroup>
 
 </Project>

@@ -9,6 +9,9 @@ using GeoApi.Service.v1.Command;
 using GeoApi.Service.v1.Query;
 using MediatR;
 using System.Collections.Generic;
+using GeoApi.Messaging.Send.Sender.v1;
+using GeoApi.Messaging.Send.Options.v1;
+using Microsoft.Extensions.Options;
 
 namespace GeoApi.Controllers.v1
 {
@@ -68,12 +71,19 @@ namespace GeoApi.Controllers.v1
         {
             try
             {
-                 Localization request = _mapper.Map<Localization>(createGeolocalizationRequestModel);
+                Localization request = _mapper.Map<Localization>(createGeolocalizationRequestModel);
 
                 var newRequest = await _mediator.Send(new CreateLocalizationRequestCommand
                 {
                     LocalizationRequest = request
                 });
+
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+                _mediator.Send(new CodificationRequestCommand
+                {
+                    Localization = newRequest
+                });
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
 
                 return _mapper.Map<LocalizationResponse>(newRequest);
             }

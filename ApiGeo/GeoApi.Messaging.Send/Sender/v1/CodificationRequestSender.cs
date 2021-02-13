@@ -1,14 +1,14 @@
-﻿using System;
-using System.Text;
-using GeoApi.Domain.Entities;
-using GeoApi.Messaging.Send.Options.v1;
+﻿using System.Text;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
+using GeoApi.Messaging.Send.Options.v1;
+using GeoApi.Domain.Entities;
+using System;
 
 namespace GeoApi.Messaging.Send.Sender.v1
 {
-    public class LocalizationRequestUpdateSender : ILocalizationRequestUpdateSender
+    public class CodificationRequestSender : ICodificationRequestSender
     {
         private readonly string _hostname;
         private readonly string _password;
@@ -16,27 +16,29 @@ namespace GeoApi.Messaging.Send.Sender.v1
         private readonly string _username;
         private IConnection _connection;
 
-        public LocalizationRequestUpdateSender(IOptions<RabbitMqConfiguration> rabbitMqOptions)
+        public CodificationRequestSender(IOptions<RabbitMqConfiguration> rabbitMqOptions)
         {
-            _queueName = rabbitMqOptions.Value.QueueName;
             _hostname = rabbitMqOptions.Value.Hostname;
+            _queueName = rabbitMqOptions.Value.QueueName;
             _username = rabbitMqOptions.Value.UserName;
             _password = rabbitMqOptions.Value.Password;
 
             CreateConnection();
         }
 
-        public void SendLocalizationRequest(Localization localizationRequest)
+        public void SendLocalizationRequest(Localization localization)
         {
             if (ConnectionExists())
             {
-                using var channel = _connection.CreateModel();
-                channel.QueueDeclare(queue: _queueName, durable: false, exclusive: false, autoDelete: false, arguments: null);
+                using (var channel = _connection.CreateModel())
+                {
+                    channel.QueueDeclare(queue: _queueName, durable: false, exclusive: false, autoDelete: false, arguments: null);
 
-                var json = JsonConvert.SerializeObject(localizationRequest);
-                var body = Encoding.UTF8.GetBytes(json);
+                    var json = JsonConvert.SerializeObject(localization);
+                    var body = Encoding.UTF8.GetBytes(json);
 
-                channel.BasicPublish(exchange: "", routingKey: _queueName, basicProperties: null, body: body);
+                    channel.BasicPublish(exchange: "", routingKey: _queueName, basicProperties: null, body: body);
+                }
             }
         }
 
@@ -48,7 +50,8 @@ namespace GeoApi.Messaging.Send.Sender.v1
                 {
                     HostName = _hostname,
                     UserName = _username,
-                    Password = _password
+                    Password = _password,
+                    Port = 51743
                 };
                 _connection = factory.CreateConnection();
             }

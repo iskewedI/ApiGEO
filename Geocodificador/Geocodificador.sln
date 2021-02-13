@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30907.101
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Geocodificador", "Geocodificador\Geocodificador.csproj", "{2AD1E870-AD8C-4B5A-A0BB-15BCDE8C418B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Geocodificador.Service", "Geocodificador.Service\Geocodificador.Service.csproj", "{368198ED-037F-4FFB-9D29-223E44C4F864}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Geocodificador.Messaging.Receive", "Geocodificador.Messaging.Receiver\Geocodificador.Messaging.Receive.csproj", "{BB942C92-E3FD-4435-8214-6D3DF056C70D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2AD1E870-AD8C-4B5A-A0BB-15BCDE8C418B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2AD1E870-AD8C-4B5A-A0BB-15BCDE8C418B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2AD1E870-AD8C-4B5A-A0BB-15BCDE8C418B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2AD1E870-AD8C-4B5A-A0BB-15BCDE8C418B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{368198ED-037F-4FFB-9D29-223E44C4F864}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{368198ED-037F-4FFB-9D29-223E44C4F864}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{368198ED-037F-4FFB-9D29-223E44C4F864}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{368198ED-037F-4FFB-9D29-223E44C4F864}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BB942C92-E3FD-4435-8214-6D3DF056C70D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BB942C92-E3FD-4435-8214-6D3DF056C70D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BB942C92-E3FD-4435-8214-6D3DF056C70D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BB942C92-E3FD-4435-8214-6D3DF056C70D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F9AC4C04-822F-49FF-AEDE-F51D976FE212}
+	EndGlobalSection
+EndGlobal

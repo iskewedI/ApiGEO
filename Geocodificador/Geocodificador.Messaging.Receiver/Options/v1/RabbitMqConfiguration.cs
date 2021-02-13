@@ -1,4 +1,4 @@
-﻿namespace GeoApi.Messaging.Send.Options.v1
+﻿namespace GeoCodificador.Messaging.Receive.Options.v1
 {
     public class RabbitMqConfiguration
     {
