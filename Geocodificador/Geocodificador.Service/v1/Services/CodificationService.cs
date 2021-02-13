@@ -2,8 +2,10 @@
 using MediatR;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Text;
+using System.Linq;
+using System.Net.Http;
+using Newtonsoft.Json;
+using System.Threading.Tasks;
 
 namespace Geocodificador.Service.v1.Services
 {
@@ -16,16 +18,22 @@ namespace Geocodificador.Service.v1.Services
             _mediator = mediator;
         }
         
-        public void CodificateLocalization(LocalizationRequestModel localizationRequestModel)
+        public async Task<CodificationResponseModel> CodificateLocalization(LocalizationRequestModel localizationRequestModel)
         {
-            try
-            {
-                var localization = localizationRequestModel;
-            }catch(Exception ex)
-            {
-                Debug.WriteLine(ex.Message);
-            }
-            throw new NotImplementedException();
+            HttpClient client = new HttpClient() { BaseAddress = new Uri("https://nominatim.openstreetmap.org") };
+
+            string url = $"/search?street={localizationRequestModel.Calle}&street={localizationRequestModel.Calle}&city={localizationRequestModel.Ciudad}&state={localizationRequestModel.Provincia}&country={localizationRequestModel.Pais}&postalcode={localizationRequestModel.Codigo_Postal}&format=json";
+
+            client.DefaultRequestHeaders.TryAddWithoutValidation("Accept", "text/html,application/json");
+            client.DefaultRequestHeaders.TryAddWithoutValidation("User-Agent", "C# App");
+
+            var response = await client.GetAsync(url);
+
+            var content = await response.Content.ReadAsStringAsync();
+
+            CodificationResponseModel responseModel = JsonConvert.DeserializeObject<List<CodificationResponseModel>>(content).FirstOrDefault();
+
+            return responseModel;
         }
     }
 }

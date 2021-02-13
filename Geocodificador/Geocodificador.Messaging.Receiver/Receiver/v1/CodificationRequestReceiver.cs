@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Text;
 using Microsoft.Extensions.Options;
-//using Newtonsoft.Json;
 using RabbitMQ.Client;
 using Microsoft.Extensions.Hosting;
 using GeoCodificador.Messaging.Receive.Options.v1;
@@ -42,8 +41,7 @@ namespace GeoCodificador.Messaging.Receive.Receiver.v1
                 HostName = _hostname,
                 UserName = _username,
                 Password = _password,
-                VirtualHost = "/",
-                Port = 51743
+                VirtualHost = "/"
             };
 
             _connection = factory.CreateConnection();
@@ -62,7 +60,9 @@ namespace GeoCodificador.Messaging.Receive.Receiver.v1
                 var content = Encoding.UTF8.GetString(ea.Body.ToArray());
                 var localizationRequestModel = JsonConvert.DeserializeObject<LocalizationRequestModel>(content);
 
-                HandleMessage(localizationRequestModel);
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+                HandleMessageAsync(localizationRequestModel);
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
 
                 _channel.BasicAck(ea.DeliveryTag, false);
             };
@@ -76,9 +76,9 @@ namespace GeoCodificador.Messaging.Receive.Receiver.v1
             return Task.CompletedTask;
         }
 
-        private void HandleMessage(LocalizationRequestModel localizationRequestModel)
+        private async Task HandleMessageAsync(LocalizationRequestModel localizationRequestModel)
         {
-            _codificationService.CodificateLocalization(localizationRequestModel);
+            CodificationResponseModel response = await _codificationService.CodificateLocalization(localizationRequestModel);
         }
 
         private void OnConsumerCancelled(object sender, ConsumerEventArgs e)

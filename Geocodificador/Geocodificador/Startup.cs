@@ -19,6 +19,12 @@ using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using GeoCodificador.Messaging.Receive.Receiver.v1;
+using Geocodificador.Service.v1.Command;
+using Geocodificador.Domain.Entities;
+using System.IO;
+using FluentValidation.AspNetCore;
+using Geocodificador.Data.Database;
+using Geocodificador.Data.Database.v1;
 
 namespace Geocodificador
 {
@@ -40,31 +46,32 @@ namespace Geocodificador
             var serviceClientSettings = serviceClientSettingsConfig.Get<RabbitMqConfiguration>();
             services.Configure<RabbitMqConfiguration>(serviceClientSettingsConfig);
 
-            //services.AddDbContext<OrderContext>(options => options.UseInMemoryDatabase(Guid.NewGuid().ToString()));
 
+            services.AddDbContext<CodificationContext>(options => options.UseInMemoryDatabase(Guid.NewGuid().ToString()));
+            
             services.AddAutoMapper(typeof(Startup));
 
-            //services.AddMvc().AddFluentValidation();
+            services.AddMvc().AddFluentValidation();
 
-            //services.AddSwaggerGen(c =>
-            //{
-            //    c.SwaggerDoc("v1", new OpenApiInfo
-            //    {
-            //        Version = "v1",
-            //        Title = "Order Api",
-            //        Description = "A simple API to create or pay orders",
-            //        Contact = new OpenApiContact
-            //        {
-            //            Name = "Wolfgang Ofner",
-            //            Email = "Wolfgang@programmingwithwolfgang.com",
-            //            Url = new Uri("https://www.programmingwithwolfgang.com/")
-            //        }
-            //    });
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Version = "v1",
+                    Title = "Order Api",
+                    Description = "A simple API to create or pay orders",
+                    Contact = new OpenApiContact
+                    {
+                        Name = "Wolfgang Ofner",
+                        Email = "Wolfgang@programmingwithwolfgang.com",
+                        Url = new Uri("https://www.programmingwithwolfgang.com/")
+                    }
+                });
 
-            //    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-            //    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-            //    c.IncludeXmlComments(xmlPath);
-            //});
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                //c.IncludeXmlComments(xmlPath);
+            });
 
             services.Configure<ApiBehaviorOptions>(options =>
             {
@@ -85,17 +92,9 @@ namespace Geocodificador
 
             services.AddMediatR(Assembly.GetExecutingAssembly(), typeof(ICodificationService).Assembly);
 
-            //services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
-            //services.AddScoped<IOrderRepository, OrderRepository>();
+            services.AddSingleton<CodificationRequestReceiver>();
 
-            //services.AddTransient<IValidator<OrderModel>, OrderModelValidator>();
-
-            //services.AddTransient<IRequestHandler<GetPaidOrderQuery, List<Order>>, GetPaidOrderQueryHandler>();
-            //services.AddTransient<IRequestHandler<GetOrderByIdQuery, Order>, GetOrderByIdQueryHandler>();
-            //services.AddTransient<IRequestHandler<GetOrderByCustomerGuidQuery, List<Order>>, GetOrderByCustomerGuidQueryHandler>();
-            //services.AddTransient<IRequestHandler<CreateOrderCommand, Order>, CreateOrderCommandHandler>();
-            //services.AddTransient<IRequestHandler<PayOrderCommand, Order>, PayOrderCommandHandler>();
-            //services.AddTransient<IRequestHandler<UpdateOrderCommand>, UpdateOrderCommandHandler>();
+            services.AddTransient<IRequestHandler<CodificateCommand, Codification>, CodificateCommandHandler>();
 
             services.AddTransient<ICodificationService, CodificationService>();
 
@@ -117,12 +116,12 @@ namespace Geocodificador
             }
 
             app.UseHttpsRedirection();
-            //app.UseSwagger();
-            //app.UseSwaggerUI(c =>
-            //{
-            //    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Order API V1");
-            //    c.RoutePrefix = string.Empty;
-            //});
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Order API V1");
+                c.RoutePrefix = string.Empty;
+            });
             app.UseRouting();
             app.UseEndpoints(endpoints =>
             {

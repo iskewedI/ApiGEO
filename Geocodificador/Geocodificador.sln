@@ -3,11 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30907.101
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Geocodificador", "Geocodificador\Geocodificador.csproj", "{2AD1E870-AD8C-4B5A-A0BB-15BCDE8C418B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Geocodificador", "Geocodificador\Geocodificador.csproj", "{2AD1E870-AD8C-4B5A-A0BB-15BCDE8C418B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Geocodificador.Service", "Geocodificador.Service\Geocodificador.Service.csproj", "{368198ED-037F-4FFB-9D29-223E44C4F864}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Geocodificador.Service", "Geocodificador.Service\Geocodificador.Service.csproj", "{368198ED-037F-4FFB-9D29-223E44C4F864}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Geocodificador.Messaging.Receive", "Geocodificador.Messaging.Receiver\Geocodificador.Messaging.Receive.csproj", "{BB942C92-E3FD-4435-8214-6D3DF056C70D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Geocodificador.Messaging.Receive", "Geocodificador.Messaging.Receiver\Geocodificador.Messaging.Receive.csproj", "{BB942C92-E3FD-4435-8214-6D3DF056C70D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Geocodificador.Domain", "Geocodificador.Domain\Geocodificador.Domain.csproj", "{77518F92-9A43-4690-ACA0-366C95D83F86}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Geocodificador.Data", "Geocodificador.Data\Geocodificador.Data.csproj", "{09730AD6-BDD4-4AFA-AB9E-EB6553B1A35C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +31,14 @@ Global
 		{BB942C92-E3FD-4435-8214-6D3DF056C70D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BB942C92-E3FD-4435-8214-6D3DF056C70D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BB942C92-E3FD-4435-8214-6D3DF056C70D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{77518F92-9A43-4690-ACA0-366C95D83F86}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{77518F92-9A43-4690-ACA0-366C95D83F86}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{77518F92-9A43-4690-ACA0-366C95D83F86}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{77518F92-9A43-4690-ACA0-366C95D83F86}.Release|Any CPU.Build.0 = Release|Any CPU
+		{09730AD6-BDD4-4AFA-AB9E-EB6553B1A35C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{09730AD6-BDD4-4AFA-AB9E-EB6553B1A35C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{09730AD6-BDD4-4AFA-AB9E-EB6553B1A35C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{09730AD6-BDD4-4AFA-AB9E-EB6553B1A35C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

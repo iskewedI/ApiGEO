@@ -50,8 +50,7 @@ namespace GeoApi.Messaging.Send.Sender.v1
                 {
                     HostName = _hostname,
                     UserName = _username,
-                    Password = _password,
-                    Port = 51743
+                    Password = _password
                 };
                 _connection = factory.CreateConnection();
             }
