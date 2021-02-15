@@ -96,7 +96,7 @@ namespace Geocodificador
             services.AddTransient(typeof(IRepository<>), typeof(Repository<>));
             services.AddTransient<ICodificationRepository, CodificationRepository>();
 
-            services.AddSingleton<CodificationRequestReceiver>();
+            //services.AddSingleton<CodificationRequestReceiver>();
             services.AddSingleton<ICodificationResponseSender, CodificationResponseSender>();
 
             services.AddTransient<IRequestHandler<CodificateCommand, Codification>, CodificateCommandHandler>();

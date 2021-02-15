@@ -3,8 +3,6 @@ using System.IO;
 using System.Reflection;
 using GeoApi.Domain.Entities;
 using GeoApi.Data.Repository.v1;
-using GeoApi.Messaging.Send.Options.v1;
-using GeoApi.Messaging.Send.Sender.v1;
 using GeoApi.Models.v1;
 using GeoApi.Service.v1.Command;
 using GeoApi.Service.v1.Query;
@@ -25,6 +23,7 @@ using GeoApi.Data.Database.v1;
 using System.Collections.Generic;
 using GeoApi.Messaging.Receive.Receiver.v1;
 using GeoApi.Service.v1.Services;
+using GeoApi.Messaging.Send.Sender.v1;
 
 namespace GeoApi
 {
@@ -95,21 +94,25 @@ namespace GeoApi
                 };
             });
 
-            services.AddMediatR(Assembly.GetExecutingAssembly());
+            services.AddMediatR(Assembly.GetExecutingAssembly(), typeof(ICodificationResponseService).Assembly);
 
             services.AddTransient(typeof(IRepository<>), typeof(Repository<>));
             services.AddTransient<ILocalizationRequestRepository, LocalizationRequestRepository>();
 
+            services.AddTransient(typeof(ILocalizationRequestRepository), typeof(LocalizationRequestRepository));
+
             services.AddTransient<IValidator<CreateLocalizationRequestModel>, CreateLocalizationRequestModelValidator>();
-            //services.AddTransient<IValidator<UpdateLocalizationRequestModel>, UpdateLocalizationRequestModelValidator>();
 
             services.AddSingleton<ICodificationRequestSender, CodificationRequestSender>();
-            services.AddSingleton<CodificationResponseReceiver>();
 
-            services.AddTransient<IRequestHandler<GetLocalizationRequestsQuery, List<Localization>>, GetLocalizationRequestsQueryHandler>();
-            services.AddTransient<IRequestHandler<CreateLocalizationRequestCommand, Localization>, CreateLocalizationRequestCommandHandler>();
-            services.AddTransient<IRequestHandler<CodificationRequestCommand, Localization>, CodificationRequestCommandHandler>();
             services.AddTransient<IRequestHandler<GetLocalizationRequestByIdQuery, Localization>, GetLocalizationRequestByIdQueryHandler>();
+            services.AddTransient<IRequestHandler<GetLocalizationRequestsQuery, List<Localization>>, GetLocalizationRequestsQueryHandler>();
+
+            services.AddTransient<IRequestHandler<CreateLocalizationRequestCommand, Localization>, CreateLocalizationRequestCommandHandler>();
+
+            services.AddTransient<IRequestHandler<UpdateLocalizationRequestCommand>, UpdateLocalizationRequestCommandHandler>();
+
+            services.AddTransient<IRequestHandler<CodificationRequestCommand, Localization>, CodificationRequestCommandHandler>();
        
             services.AddTransient<ICodificationResponseService, CodificationResponseService>();
 

@@ -20,11 +20,11 @@ namespace GeoApi.Service.v1.Command
 
         public async Task<Localization> Handle(CodificationRequestCommand request, CancellationToken cancellationToken)
         {
-            var customer = await _localizationRequestRepository.GetLocalizationRequestByIdAsync(request.Localization.Id, cancellationToken);
+            var localizationRequest = await _localizationRequestRepository.GetLocalizationRequestByIdAsync(request.Localization.Id, cancellationToken);
             
-            _codificationRequestSender.SendLocalizationRequest(customer);
+            _codificationRequestSender.SendLocalizationRequest(localizationRequest);
             
-            return customer;
+            return localizationRequest;
         }
     }
 }

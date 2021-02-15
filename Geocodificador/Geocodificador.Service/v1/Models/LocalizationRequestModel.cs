@@ -1,7 +1,11 @@
-﻿namespace Geocodificador.Service.v1.Models
+﻿using System;
+
+namespace Geocodificador.Service.v1.Models
 {
     public class LocalizationRequestModel
     {
+        public Guid Id { get; set; }
+
         public string Calle { get; set; }
 
         public string Numero { get; set; }

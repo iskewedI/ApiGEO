@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace GeoApi.Domain.Entities
+namespace GeoApi.Service.v1.Models
 {
     public class LocalizationResponse
     {

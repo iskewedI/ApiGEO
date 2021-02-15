@@ -1,14 +1,14 @@
 ﻿using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace GeoApi.Service.v1.Models
 {
     public class CodificationResponseModel
     {
+        public Guid Id { get; set; }
+
         [JsonProperty("place_id")]
-        public string Id { get; set; }
+        public string Place_Id { get; set; }
 
         [JsonProperty("osm_id")]
         public string Osm_Id { get; set; }

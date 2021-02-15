@@ -16,7 +16,9 @@ namespace GeoApi.Messaging.Receive.Receiver.v1
     {
         private IModel _channel;
         private IConnection _connection;
+
         private readonly ICodificationResponseService _codificationResponseService;
+
         private readonly string _hostname;
         private readonly string _queueName;
         private readonly string _username;
@@ -28,6 +30,7 @@ namespace GeoApi.Messaging.Receive.Receiver.v1
             _queueName = rabbitMqOptions.Value.QueueName;
             _username = rabbitMqOptions.Value.UserName;
             _password = rabbitMqOptions.Value.Password;
+
             _codificationResponseService = codificationResponseService;
 
             InitializeRabbitMqListener();
@@ -49,9 +52,9 @@ namespace GeoApi.Messaging.Receive.Receiver.v1
             _channel.QueueDeclare(queue: _queueName, durable: false, exclusive: false, autoDelete: false, arguments: null);
         }
 
-        protected override Task ExecuteAsync(CancellationToken stoppingToken)
+        protected override Task ExecuteAsync(CancellationToken cancellationToken)
         {
-            stoppingToken.ThrowIfCancellationRequested();
+            cancellationToken.ThrowIfCancellationRequested();
 
             var consumer = new EventingBasicConsumer(_channel);
             consumer.Received += (ch, ea) =>
@@ -59,9 +62,9 @@ namespace GeoApi.Messaging.Receive.Receiver.v1
                 var content = Encoding.UTF8.GetString(ea.Body.ToArray());
                 var codificationResponseModel = JsonConvert.DeserializeObject<CodificationResponseModel>(content);
 
-#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-                HandleMessageAsync(codificationResponseModel);
-#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+#pragma warning disable CS4014
+                HandleMessage(codificationResponseModel);
+#pragma warning restore CS4014
 
                 _channel.BasicAck(ea.DeliveryTag, false);
             };
@@ -75,11 +78,11 @@ namespace GeoApi.Messaging.Receive.Receiver.v1
             return Task.CompletedTask;
         }
 
-        private async Task HandleMessageAsync(CodificationResponseModel localizationRequestModel)
+        private void HandleMessage(CodificationResponseModel codificationResponseModel)
         {
-            //await _codificationService.CodificateLocalization(localizationRequestModel);
+            _codificationResponseService.UpdateLocalizationInfo(codificationResponseModel);
         }
-
+    
         private void OnConsumerCancelled(object sender, ConsumerEventArgs e)
         {
         }

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using GeoApi.Domain.Entities;
 using GeoApi.Models.v1;
+using GeoApi.Service.v1.Models;
 
 namespace GeoApi.Infrastructure.AutoMapper
 {

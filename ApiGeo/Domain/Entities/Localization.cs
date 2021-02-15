@@ -2,7 +2,7 @@
 
 namespace GeoApi.Domain.Entities
 {
-    public class Localization
+    public partial class Localization
     {
         public Guid Id { get; set; }
 
@@ -17,5 +17,11 @@ namespace GeoApi.Domain.Entities
         public string Provincia { get; set; }
 
         public string Pais { get; set; }
+
+        public string Latitud { get; set; }
+
+        public string Longitud { get; set; }
+
+        public string Estado { get; set; }
     }
 }

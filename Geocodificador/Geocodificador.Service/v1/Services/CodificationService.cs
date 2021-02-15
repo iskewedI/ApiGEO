@@ -35,6 +35,8 @@ namespace Geocodificador.Service.v1.Services
 
             Codification codification = JsonConvert.DeserializeObject<List<Codification>>(content).FirstOrDefault();
 
+            codification.Id = localizationRequestModel.Id;
+
             CodificationResponseCommand codificationResponseCommand = new CodificationResponseCommand
             {
                 Codification = codification
