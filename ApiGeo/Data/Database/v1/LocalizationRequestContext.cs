@@ -13,16 +13,6 @@ namespace GeoApi.Data.Database.v1
         public LocalizationRequestContext(DbContextOptions<LocalizationRequestContext> options)
             : base(options)
         {
-            var localizations = new[]
-            {
-                new Localization
-                {
-                    Id = Guid.Parse("9f35b48d-cb87-4783-bfdb-21e36012930a")
-                }
-            };
-
-            LocalizationRequest.AddRange(localizations);
-            SaveChanges();
         }
 
         public DbSet<Localization> LocalizationRequest { get; set; }

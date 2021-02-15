@@ -50,8 +50,13 @@ namespace GeoApi
             var serviceClientSettingsConfigSender = Configuration.GetSection("RabbitMqSender");
             services.Configure<Messaging.Send.Options.v1.RabbitMqConfiguration>(serviceClientSettingsConfigSender);
 
-            // CHANGE TO DB
-            services.AddDbContext<LocalizationRequestContext>(options => options.UseInMemoryDatabase(Guid.NewGuid().ToString()));
+            //DB Config
+            //services.Configure<LocalizationsDatabaseSettings>(Configuration.GetSection(nameof(LocalizationsDatabaseSettings)));
+
+            //services.AddSingleton<ILocalizationsDatabaseSettings>(sp =>
+            //    sp.GetRequiredService<IOptions<LocalizationsDatabaseSettings>>().Value);
+
+            services.AddDbContext<LocalizationRequestContext>(options => options.UseSqlServer(Configuration["Database:ConnectionString:SQLServerConnection"]));
 
             services.AddAutoMapper(typeof(Startup));
 

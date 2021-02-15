@@ -28,6 +28,31 @@ namespace GeoApi.Controllers.v1
         }
 
         /// <summary>
+        ///     Action to retrieve an specific Geocodification
+        /// </summary>
+        /// <returns>Returns a Geocodification</returns>
+        /// <response code="200">Returned if the geocodification was found</response>
+        /// <response code="400">Returned if the geocodification could not be retrieved</response>
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [HttpGet("geocodificar/{id}")]
+        public async Task<ActionResult<GeocodificationResponse>> LocalizationRequests(Guid id)
+        {
+            try
+            {
+                Localization localization = await _mediator.Send(new GetLocalizationRequestByIdQuery() { 
+                    Id = id
+                });
+
+                return _mapper.Map<GeocodificationResponse>(localization);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        /// <summary>
         ///     Action to retrieve all localization requests
         /// </summary>
         /// <returns>Returns a list of all localization requests</returns>
@@ -40,7 +65,11 @@ namespace GeoApi.Controllers.v1
         {
             try
             {
-                return await _mediator.Send(new GetLocalizationRequestsQuery());
+                List<Localization> localizations = await _mediator.Send(new GetLocalizationRequestsQuery());
+
+                var mapped = _mapper.Map<List<Localization>>(localizations);
+
+                return mapped;
             }
             catch (Exception ex)
             {
