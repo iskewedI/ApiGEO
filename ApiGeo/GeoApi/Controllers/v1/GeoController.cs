@@ -70,7 +70,7 @@ namespace GeoApi.Controllers.v1
                 var mapped = _mapper.Map<List<Localization>>(localizations);
 
                 return mapped;
-            }
+            }   
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
