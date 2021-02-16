@@ -1,0 +1,27 @@
+FROM mcr.microsoft.com/dotnet/aspnet:5.0 AS base
+WORKDIR /app
+EXPOSE 80
+EXPOSE 443
+
+FROM mcr.microsoft.com/dotnet/sdk:5.0.102-ca-patch-buster-slim AS build
+WORKDIR /src
+COPY ["GeoApi/GeoApi.csproj", "ApiGeo/"]
+COPY ["Data/GeoApi.Data.csproj", "ApiGeo.Data/"]
+COPY ["Domain/GeoApi.Domain.csproj", "ApiGeo.Domain/"]
+COPY ["ApiGeo.Service/GeoApi.Service.csproj", "ApiGeo.Service/"]
+COPY ["GeoApi.Messaging.Send/GeoApi.Messaging.Send.csproj", "ApiGeo.Messaging.Send/"]
+COPY ["GeoApi.Messaging.Receive/GeoApi.Messaging.Receive.csproj", "ApiGeo.Messaging.Receive/"]
+COPY ["*.props", "./"]
+
+RUN dotnet restore "ApiGeo/GeoApi.csproj"
+COPY . .
+
+RUN dotnet build "ApiGeo/GeoApi.csproj" -c Release -o /app/build --no-restore
+
+FROM build AS publish
+RUN dotnet publish "ApiGeo/GeoApi.csproj" --no-restore -c Release -o /app/publish
+
+FROM base AS final
+WORKDIR /app
+COPY --from=publish /app/publish .
+ENTRYPOINT ["dotnet", "GeoApi.dll"]

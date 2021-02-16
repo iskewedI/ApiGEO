@@ -1,0 +1,45 @@
+name: NetCore-ApiGeo-CI
+trigger:
+  branches:
+    include:
+      - master
+  paths:
+    include:
+      - ApiGeo/*
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  buildConfiguration: 'Release'
+
+steps:
+  - task: DotNetCoreCLI@2
+    inputs:
+      command: 'restore'
+      projects: '**/GeoApi*.csproj'
+    displayName: 'Restore Nuget Packages'
+
+  - task: DotNetCoreCLI@2
+    inputs:
+      command: 'build'
+      projects: '**/GeoApi*.csproj'
+      arguments: '--no-restore'
+    displayName: 'Build projects'
+
+  # - task: DotNetCoreCLI@2 TODO
+  #   inputs:
+  #     command: 'test'
+  #     projects: '**/*Test.csproj'
+  #     arguments: '--no-restore --no-build'
+  #   displayName: 'Run Tests'
+
+  - task: DotNetCoreCLI@2
+    inputs:
+      command: 'publish'
+      publishWebProjects: false
+      projects: '**/GeoApi.csproj'
+      arguments: '--configuration $(buildConfiguration) --no-restore'
+      modifyOutputPath: false
+    displayName: 'Publish ApiGeo'
+    condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))

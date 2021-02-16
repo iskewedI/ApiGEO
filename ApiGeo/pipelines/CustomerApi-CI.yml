@@ -1,0 +1,51 @@
+name: ApiGeo-CI
+trigger:
+  branches:
+    include:
+      - master
+  paths:
+    include:
+      - GeoApi/*
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  AzureSubscription: 'AzureServiceConnection' # Name of the Service Connection
+  ApiName: 'apigeo'
+  BuildId: $(Build.BuildId)
+  BuildNumber: $(Build.BuildNumber)
+  ClusterResourceGroup: GeolocalizationApi
+  ChartPackage: '$(Build.ArtifactStagingDirectory)/$(ApiName)-$(Build.BuildNumber).tgz'
+  ChartPath: 'ApiGeo/GeoApi/charts/$(ApiName)' #TODO
+  HelmVersion: 3.5.0
+  ImageName: 'images/$(ApiName):$(Build.BuildNumber)'
+  K8sNamespace: '$(ApiName)-test'
+  KubernetesCluster: 'microservice-aks'
+
+stages:
+  - stage: Build
+    displayName: Build image
+    jobs:
+      - job: Build
+        displayName: Build and push Docker image
+        steps:
+          - template: templates/BuildVersioning.yml
+          - template: templates/DockerBuildAndPush.yml
+            parameters:
+              buildId: $(BuildId)
+              patMicroserviceDemoNugetsFeed: $(PatMicroserviceDemoNugetsFeed)
+              imageName: $(ImageName)
+          - template: templates/HelmInstall.yml
+            parameters:
+              helmVersion: $(HelmVersion)
+          - template: templates/HelmDeploy.yml
+            parameters:
+              apiName: $(ApiName)
+              azureSubscription: $(AzureSubscription)
+              buildNumber: $(BuildNumber)
+              clusterResourceGroup: $(ClusterResourceGroup)
+              chartPackage: $(ChartPackage)
+              chartPath: $(ChartPath)
+              k8sNamespace: $(K8sNamespace)
+              kubernetesCluster: $(KubernetesCluster)

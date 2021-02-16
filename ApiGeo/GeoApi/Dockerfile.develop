@@ -1,0 +1,23 @@
+FROM mcr.microsoft.com/dotnet/sdk:5.0.102-ca-patch-buster-slim
+ARG BUILD_CONFIGURATION=Debug
+ENV ASPNETCORE_ENVIRONMENT=Development
+ENV ASPNETCORE_URLS=http://+:80
+ENV DOTNET_USE_POLLING_FILE_WATCHER=true
+EXPOSE 80
+
+WORKDIR /src
+COPY ["GeoApi/GeoApi.csproj", "ApiGeo/"]
+COPY ["Data/GeoApi.Data.csproj", "ApiGeo.Data/"]
+COPY ["Domain/GeoApi.Domain.csproj", "ApiGeo.Domain/"]
+COPY ["ApiGeo.Service/GeoApi.Service.csproj", "ApiGeo.Service/"]
+COPY ["GeoApi.Messaging.Send/GeoApi.Messaging.Send.csproj", "ApiGeo.Messaging.Send/"]
+COPY ["GeoApi.Messaging.Receive/GeoApi.Messaging.Receive.csproj", "ApiGeo.Messaging.Receive/"]
+
+RUN dotnet restore "ApiGeo/GeoApi.csproj"
+COPY . .
+WORKDIR "/src/GeoApi"
+RUN dotnet build --no-restore "GeoApi.csproj" -c $BUILD_CONFIGURATION
+
+RUN echo "exec dotnet run --no-build --no-launch-profile -c $BUILD_CONFIGURATION --" > /entrypoint.sh
+
+ENTRYPOINT ["/bin/bash", "/entrypoint.sh"]
