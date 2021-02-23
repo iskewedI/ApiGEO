@@ -1,0 +1,23 @@
+FROM mcr.microsoft.com/dotnet/sdk:5.0.102-ca-patch-buster-slim
+ARG BUILD_CONFIGURATION=Debug
+ENV ASPNETCORE_ENVIRONMENT=Development
+ENV ASPNETCORE_URLS=http://+:80
+ENV DOTNET_USE_POLLING_FILE_WATCHER=true
+EXPOSE 80
+
+WORKDIR /src
+COPY ["Geocodificador/Geocodificador.csproj", "Geocodificador/"]
+COPY ["Geocodificador.Data/Geocodificador.GeoApi.Data.csproj", "Geocodificador.Data/"]
+COPY ["Geocodificador.Domain/Geocodificador.GeoApi.Domain.csproj", "Geocodificador.Domain/"]
+COPY ["Geocodificador.Service/Geocodificador.Service.csproj", "Geocodificador.Service/"]
+COPY ["Geocodificador.Messaging.Send/Geocodificador.Messaging.Send.csproj", "Geocodificador.Messaging.Send/"]
+COPY ["Geocodificador.Messaging.Receive/Geocodificador.Messaging.Receive.csproj", "Geocodificador.Messaging.Receive/"]
+
+RUN dotnet restore "Geocodificador/Geocodificador.csproj"
+COPY . .
+WORKDIR "/src/Geocodificador"
+RUN dotnet build --no-restore "Geocodificador.csproj" -c $BUILD_CONFIGURATION
+
+RUN echo "exec dotnet run --no-build --no-launch-profile -c $BUILD_CONFIGURATION --" > /entrypoint.sh
+
+ENTRYPOINT ["/bin/bash", "/entrypoint.sh"]

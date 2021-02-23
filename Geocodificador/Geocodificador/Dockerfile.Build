@@ -1,0 +1,27 @@
+FROM mcr.microsoft.com/dotnet/aspnet:5.0 AS base
+WORKDIR /app
+EXPOSE 80
+EXPOSE 443
+
+FROM mcr.microsoft.com/dotnet/sdk:5.0.102-ca-patch-buster-slim AS build
+WORKDIR /src
+COPY ["Geocodificador/Geocodificador.csproj", "Geocodificador/"]
+COPY ["Geocodificador.Data/Geocodificador.GeoApi.Data.csproj", "Geocodificador.Data/"]
+COPY ["Geocodificador.Domain/Geocodificador.GeoApi.Domain.csproj", "Geocodificador.Domain/"]
+COPY ["Geocodificador.Service/Geocodificador.Service.csproj", "Geocodificador.Service/"]
+COPY ["Geocodificador.Messaging.Send/Geocodificador.Messaging.Send.csproj", "Geocodificador.Messaging.Send/"]
+COPY ["Geocodificador.Messaging.Receive/Geocodificador.Messaging.Receive.csproj", "Geocodificador.Messaging.Receive/"]
+COPY ["*.props", "./"]
+
+RUN dotnet restore "Geocodificador/Geocodificador.csproj"
+COPY . .
+
+RUN dotnet build "Geocodificador/Geocodificador.csproj" -c Release -o /app/build --no-restore
+
+FROM build AS publish
+RUN dotnet publish "Geocodificador/Geocodificador.csproj" --no-restore -c Release -o /app/publish
+
+FROM base AS final
+WORKDIR /app
+COPY --from=publish /app/publish .
+ENTRYPOINT ["dotnet", "Geocodificador.dll"]
